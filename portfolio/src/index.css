@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Глобальные стили согласно DESIGN.md и DESIGN_RULES.md */
+
+:root {
+  /* Цветовые токены */
+  --color-bg: #0B0D10;
+  --color-surface: #12161C;
+  --color-surface-elevated: #181D24;
+  --color-text-primary: #F2F4F7;
+  --color-text-secondary: #8E99A8;
+  --color-text-muted: #5E6875;
+  --color-border: #252B34;
+  --color-accent: #4C8DFF;
+  --color-accent-secondary: #5FC6D6;
+
+  /* Типографика */
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-md: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 32px;
+  --text-4xl: 40px;
+  --text-5xl: 48px;
+  --text-6xl: 64px;
+  --text-hero: 80px;
+
+  /* Начертания */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Сетка 8px */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+  --space-8: 64px;
+  --space-10: 80px;
+  --space-12: 96px;
+  --space-16: 128px;
+
+  /* Карточка */
+  --card-padding: 24px;
+  --card-radius: 12px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Утилитарные классы для компонентов */
+@layer components {
+  .container-custom {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  @media (max-width: 768px) {
+    .container-custom {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+  }
+
+  .card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--card-radius);
+    padding: var(--card-padding);
+  }
+
+  .card-elevated {
+    background-color: var(--color-surface-elevated);
+  }
+
+  .text-primary {
+    color: var(--color-text-primary);
+  }
+
+  .text-secondary {
+    color: var(--color-text-secondary);
+  }
+
+  .text-muted {
+    color: var(--color-text-muted);
+  }
+
+  .btn-accent {
+    background-color: var(--color-accent);
+    color: var(--color-text-primary);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: var(--weight-medium);
+    transition: opacity 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+  }
+
+  .btn-accent:hover {
+    opacity: 0.9;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+/* Запрещённые паттерны (предотвращение) */
+/* Не использовать: мелкий капс с разрядкой, точки-разделители, стекло без функции */

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Инженерный подход к разработке | Портфолио</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --surface: #111111;
+            --surface-highlight: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --text-dim: #444444;
+            --accent: #ff3b30;
+            --border: #222222;
+            --grid-unit: 8px;
+            --font-mono: 'IBM Plex Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 16px;
+            line-height: 1.5;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 calc(var(--grid-unit) * 3);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding: calc(var(--grid-unit) * 10) 0;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: calc(var(--grid-unit) * 8);
+            align-items: center;
+        }
+
+        @media (max-width: 968px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: calc(var(--grid-unit) * 6);
+            }
+        }
+
+        .hero-content {
+            z-index: 2;
+        }
+
+        .hero-label {
+            color: var(--accent);
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: calc(var(--grid-unit) * 3);
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .hero-title {
+            font-size: clamp(32px, 5vw, 64px);
+            font-weight: 600;
+            line-height: 1.1;
+            margin-bottom: calc(var(--grid-unit) * 3);
+            color: var(--text-primary);
+        }
+
+        .hero-title .highlight {
+            color: var(--accent);
+        }
+
+        .hero-description {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: calc(var(--grid-unit) * 5);
+            max-width: 540px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: calc(var(--grid-unit) * 4);
+            margin-bottom: calc(var(--grid-unit) * 6);
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: calc(var(--grid-unit) * 2) calc(var(--grid-unit) * 3);
+            min-width: 140px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--accent);
+            display: block;
+            margin-bottom: calc(var(--grid-unit) * 1);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: calc(var(--grid-unit) * 2);
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: calc(var(--grid-unit) * 2) calc(var(--grid-unit) * 4);
+            font-family: var(--font-mono);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .cta-button:hover {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        .cta-button::after {
+            content: '→';
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover::after {
+            transform: translateX(4px);
+        }
+
+        /* Code/Visual Panel */
+        .hero-visual {
+            position: relative;
+            height: 500px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .code-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: calc(var(--grid-unit) * 3);
+            opacity: 1;
+            transition: opacity 0.8s ease;
+        }
+
+        .code-panel.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .ui-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: calc(var(--grid-unit) * 3);
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            pointer-events: none;
+        }
+
+        .ui-panel.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .code-line {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            white-space: pre;
+        }
+
+        .code-keyword { color: #c678dd; }
+        .code-function { color: #61afef; }
+        .code-string { color: #98c379; }
+        .code-number { color: #d19a66; }
+        .code-comment { color: #5c6370; }
+        .code-accent { color: var(--accent); }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 18px;
+            background: var(--accent);
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* UI Elements for transformation */
+        .ui-metric-card {
+            background: var(--surface-highlight);
+            border: 1px solid var(--border);
+            padding: calc(var(--grid-unit) * 3);
+            margin-bottom: calc(var(--grid-unit) * 2);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.6s ease;
+        }
+
+        .ui-metric-card.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .ui-metric-value {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: calc(var(--grid-unit) * 1);
+        }
+
+        .ui-metric-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .ui-chart {
+            margin-top: calc(var(--grid-unit) * 4);
+            height: 120px;
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: var(--border);
+            height: 20%;
+            transition: height 0.6s ease;
+        }
+
+        .chart-bar.active {
+            background: var(--accent);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: calc(var(--grid-unit) * 3);
+            padding-bottom: calc(var(--grid-unit) * 2);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-title {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .panel-status {
+            font-size: 12px;
+            color: var(--accent);
+        }
+
+        .typing-indicator {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <main class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <span class="hero-label">// Результат для бизнеса</span>
+                    <h1 class="hero-title">
+                        Превращаю код в<br>
+                        <span class="highlight">измеримый рост</span>
+                    </h1>
+                    <p class="hero-description">
+                        Разрабатываю веб-интерфейсы, которые увеличивают конверсию и снижают стоимость привлечения клиентов. Инженерный подход вместо визуального шума.
+                    </p>
+                    
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">+47%</span>
+                            <span class="stat-label">Конверсия</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">-32%</span>
+                            <span class="stat-label">CPC</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">2.1x</span>
+                            <span class="stat-label">ROI</span>
+                        </div>
+                    </div>
+
+                    <a href="#contact" class="cta-button">Обсудить проект</a>
+                </div>
+
+                <div class="hero-visual">
+                    <!-- Code Panel -->
+                    <div class="code-panel" id="codePanel">
+                        <div class="panel-header">
+                            <span class="panel-title">analytics.ts</span>
+                            <span class="panel-status">● executing</span>
+                        </div>
+                        <div id="codeContent"></div>
+                        <span class="cursor"></span>
+                    </div>
+
+                    <!-- UI Panel -->
+                    <div class="ui-panel" id="uiPanel">
+                        <div class="panel-header">
+                            <span class="panel-title">Dashboard Analytics</span>
+                            <span class="panel-status">● live data</span>
+                        </div>
+                        
+                        <div class="ui-metric-card" id="metric1">
+                            <div class="ui-metric-value">+47%</div>
+                            <div class="ui-metric-label">Conversion Rate</div>
+                        </div>
+
+                        <div class="ui-metric-card" id="metric2">
+                            <div class="ui-metric-value">-32%</div>
+                            <div class="ui-metric-label">Cost Per Click</div>
+                        </div>
+
+                        <div class="ui-metric-card" id="metric3">
+                            <div class="ui-metric-value">2.1x</div>
+                            <div class="ui-metric-label">Return on Investment</div>
+                        </div>
+
+                        <div class="ui-chart">
+                            <div class="chart-bar" style="height: 30%"></div>
+                            <div class="chart-bar" style="height: 45%"></div>
+                            <div class="chart-bar" style="height: 35%"></div>
+                            <div class="chart-bar" style="height: 60%"></div>
+                            <div class="chart-bar" style="height: 50%"></div>
+                            <div class="chart-bar" style="height: 75%"></div>
+                            <div class="chart-bar" style="height: 65%"></div>
+                            <div class="chart-bar" style="height: 85%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const codeLines = [
+            { text: '// Расчет метрик эффективности', class: 'code-comment' },
+            { text: 'const ', class: 'code-keyword' },
+            { text: 'calculateROI', class: 'code-function' },
+            { text: ' = (', class: '' },
+            { text: 'revenue', class: 'code-accent' },
+            { text: ', ', class: '' },
+            { text: 'cost', class: 'code-accent' },
+            { text: ') => {', class: '' },
+            { text: '  const ', class: 'code-keyword' },
+            { text: 'roi', class: 'code-function' },
+            { text: ' = (', class: '' },
+            { text: 'revenue', class: 'code-accent' },
+            { text: ' - ', class: '' },
+            { text: 'cost', class: 'code-accent' },
+            { text: ') / ', class: '' },
+            { text: 'cost', class: 'code-accent' },
+            { text: ';', class: '' },
+            { text: '  return ', class: 'code-keyword' },
+            { text: 'roi', class: 'code-function' },
+            { text: ' * ', class: '' },
+            { text: '100', class: 'code-number' },
+            { text: ';', class: '' },
+            { text: '};', class: '' },
+            { text: '', class: '' },
+            { text: '// Оптимизация конверсии', class: 'code-comment' },
+            { text: 'const ', class: 'code-keyword' },
+            { text: 'optimizeConversion', class: 'code-function' },
+            { text: ' = async () => {', class: '' },
+            { text: '  await ', class: 'code-keyword' },
+            { text: 'analyzeUserBehavior', class: 'code-function' },
+            { text: '();', class: '' },
+            { text: '  return ', class: 'code-keyword' },
+            { text: '+47%', class: 'code-string' },
+            { text: ';', class: '' },
+            { text: '}', class: '' }
+        ];
+
+        let currentLine = 0;
+        let currentChar = 0;
+        let isTyping = true;
+        let animationPhase = 'typing'; // typing, transforming, showing, resetting
+
+        const codeContent = document.getElementById('codeContent');
+        const codePanel = document.getElementById('codePanel');
+        const uiPanel = document.getElementById('uiPanel');
+        const metricCards = [
+            document.getElementById('metric1'),
+            document.getElementById('metric2'),
+            document.getElementById('metric3')
+        ];
+        const chartBars = document.querySelectorAll('.chart-bar');
+
+        function typeCode() {
+            if (!isTyping) return;
+
+            if (currentLine >= codeLines.length) {
+                setTimeout(startTransformation, 800);
+                return;
+            }
+
+            const line = codeLines[currentLine];
+            
+            if (currentChar === 0) {
+                const lineElement = document.createElement('div');
+                lineElement.className = 'code-line';
+                lineElement.id = `line-${currentLine}`;
+                codeContent.appendChild(lineElement);
+            }
+
+            const currentLineElement = document.getElementById(`line-${currentLine}`);
+            
+            if (currentChar < line.text.length) {
+                const char = line.text[currentChar];
+                const span = document.createElement('span');
+                span.textContent = char;
+                if (line.class) span.className = line.class;
+                currentLineElement.appendChild(span);
+                currentChar++;
+                setTimeout(typeCode, Math.random() * 30 + 20);
+            } else {
+                currentLine++;
+                currentChar = 0;
+                setTimeout(typeCode, 150);
+            }
+        }
+
+        function startTransformation() {
+            animationPhase = 'transforming';
+            codePanel.classList.add('hidden');
+            
+            setTimeout(() => {
+                uiPanel.classList.add('visible');
+                showMetricsSequentially();
+            }, 800);
+        }
+
+        function showMetricsSequentially() {
+            animationPhase = 'showing';
+            
+            metricCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('show');
+                }, index * 300);
+            });
+
+            setTimeout(() => {
+                animateChart();
+            }, metricCards.length * 300 + 400);
+
+            setTimeout(resetAnimation, 4000);
+        }
+
+        function animateChart() {
+            chartBars.forEach((bar, index) => {
+                setTimeout(() => {
+                    bar.classList.add('active');
+                    const heights = [40, 55, 45, 70, 60, 85, 75, 95];
+                    bar.style.height = heights[index] + '%';
+                }, index * 100);
+            });
+        }
+
+        function resetAnimation() {
+            animationPhase = 'resetting';
+            isTyping = false;
+
+            uiPanel.classList.remove('visible');
+            metricCards.forEach(card => card.classList.remove('show'));
+            chartBars.forEach(bar => {
+                bar.classList.remove('active');
+                bar.style.height = '20%';
+            });
+
+            setTimeout(() => {
+                codeContent.innerHTML = '';
+                currentLine = 0;
+                currentChar = 0;
+                codePanel.classList.remove('hidden');
+                isTyping = true;
+                typeCode();
+            }, 800);
+        }
+
+        // Start animation on load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(typeCode, 500);
+        });
+    </script>
+</body>
+</html>
